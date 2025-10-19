@@ -1,29 +1,34 @@
-import express, { Request, Response } from 'express'
-import showRequests from './middleware/showRequest'
-import cors from 'cors'
-import authRouter from './routes/authRoutes'
-import testRoutes from './routes/testRoutes'
-import userRoutes from './routes/userRoutes'
+import express, { Request, Response } from "express";
+import path from "path";
+import cors from "cors";
+import showRequests from "./middleware/showRequest";
+import authRouter from "./routes/authRoutes";
+import chatRoutes from "./routes/chatRoutes";
+import userRoutes from "./routes/userRoutes";
+import testRoutes from "./routes/testRoutes";
 
-const app = express()
-const port = process.env.PORT || 8000
+const app = express();
+const port = process.env.PORT || 8000;
 
-app.use(express.json())
-app.use(showRequests)
+app.use(express.json());
+app.use(showRequests);
+
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:8080'],
-  exposedHeaders: ['token'],
+  origin: ["http://localhost:3000", "http://localhost:5173", "http://localhost:8080"],
+  exposedHeaders: ["token"],
   credentials: true
-}))
+}));
 
-app.get('/ping', (_req: Request, res: Response) => {
-  res.send({ message: 'pong' })
-})
+const publicPath = path.join(__dirname, "../public");
+app.use(express.static(publicPath));
 
-app.use('/auth', authRouter)
-app.use('/user', userRoutes)
-app.use('/test', testRoutes)
+app.get("/", (_req: Request, res: Response) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
 
-//TODO: añadir validaciones con zod (listo)
+app.use("/auth", authRouter);
+app.use("/chat", chatRoutes);
+app.use("/user", userRoutes);
+app.use("/test", testRoutes);
 
-export { app, port }
+export { app, port };

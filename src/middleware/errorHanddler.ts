@@ -1,35 +1,17 @@
-import { ErrorRequestHandler } from 'express';
+import { Request, Response, NextFunction } from "express";
 
-interface Error {
-  message?: string
-  status?: number
-  code?: string
-  meta?: {
-    target?: string[]
-  }
-}
+// Agrega esta función
+export const httpError = (status: number, message: string) => {
+  const err = new Error(message) as any;
+  err.status = status;
+  return err;
+};
 
-const errorHanddler: ErrorRequestHandler = (error: Error, _req, res, _next) => {
-  console.log(error)
-  let message = error.message || 'internal server error'
-  let status = error.status || 500
+const errorHanddler = (err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.error("Error capturado:", err);
+  const status = err.status || 500;
+  const message = err.message || "Error interno del servidor";
+  res.status(status).json({ message });
+};
 
-  if (error.constructor.name === 'PrismaClientKnownRequestError') {
-    switch (error.code) {
-      case 'P2002':
-        message = `el ${error.meta?.target} ya está en uso` 
-        status = 400
-        break;
-      default:
-        message = `Error de prisma no manejado, revisar logs` 
-        break;
-    }
-  }
-
-  return res.status(status).json({
-    message,
-    status
-  }) 
-}
-
-export default errorHanddler
+export default errorHanddler;

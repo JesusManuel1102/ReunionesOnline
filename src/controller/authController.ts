@@ -1,34 +1,32 @@
-import createToken from '../middleware/jwt/createToken'
-import { IUser } from '../model/IUser'
-import userService from '../service/userService'
-import { RequestHandler } from 'express'
-import hashPassword from '../util/bcrypt/hashpassword'
-import comparePassword from '../util/bcrypt/comparePassword'
+import { Request, Response, NextFunction } from "express";
+import createToken from "../middleware/jwt/createToken";
+import userService from "../service/userService";
 
-export const register: RequestHandler = async (req, res) => {
-  const data: IUser = req.body
-  const hashedPassword = await hashPassword(data.password)
-
-  await userService.create({
-    ...data,
-    password: hashedPassword,
-  })
-
-  res.status(200).json({ message: 'usuario creado' })
-}
-
-export const login: RequestHandler = async (req, res) => {
-  const data: IUser = req.body
-  const user = await userService.getByUsername(data.username)
-
-  if (!user) return res.status(404).json({ message: 'username no encontrado' })
-  await comparePassword(data.password, user.password)
-
-  const payload = {
-    id: user.id,
-    username: data.username,
+export const register = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { username, role, password } = req.body;
+    await userService.create({ username, role, password });
+    res.status(201).json({ message: "usuario creado" });
+  } catch (err: any) {
+    console.error("Error en register:", err);
+    next(err);
   }
+};
 
-  const token = createToken(payload, '1h')
-  res.header('token', token).json({ user: payload })
-}
+export const login = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { username, password } = req.body;
+    const user = await userService.getByUsername(username);
+    if (!user) {
+      return res.status(404).json({ message: "username no encontrado" });
+    }
+    await userService.comparePassword(password, user.password);
+
+    const payload = { id: user.id, username: user.username };
+    const token = createToken(payload, "1h");
+    res.header("token", token).json({ user: payload });
+  } catch (err: any) {
+    console.error("Error en login:", err);
+    next(err);
+  }
+};

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chat público</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Chat público</h2>
+    <div id="messages" style="border:1px solid #ccc; height:200px; overflow-y:auto; padding:8px;"></div>
+    <input type="text" id="messageInput" placeholder="Escribe tu mensaje..." />
+    <button id="btnSend">Enviar</button>
+    <button id="btnLogout">Salir</button>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>

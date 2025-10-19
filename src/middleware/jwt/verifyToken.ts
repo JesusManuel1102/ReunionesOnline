@@ -1,20 +1,24 @@
-import { RequestHandler } from 'express'
-import jwt from 'jsonwebtoken'
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { httpError } from "../errorHanddler";
 
-const verifyToken: RequestHandler = (req, res, next) => {
-  const token = req.headers['token']
-
-  try {
-    const decoded: any = jwt.verify(
-      token as string,
-      process.env.JWT_SECRET || 'secret',
-    )
-    
-    req.user = decoded
-    next()
-  } catch (error) {
-    return res.status(401).json({ error })
-  }
+export interface JwtPayload {
+  id: number;
+  username: string;
 }
 
-export default verifyToken
+const verifyToken = (req: any, res: Response, next: NextFunction) => {
+  const token = req.headers["token"] as string;
+  if (!token) {
+    return next(httpError(401, "Token no provisto"));
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret") as JwtPayload;
+    req.user = decoded;
+    next();
+  } catch (err: any) {
+    return next(httpError(403, "Token inválido"));
+  }
+};
+
+export default verifyToken;
