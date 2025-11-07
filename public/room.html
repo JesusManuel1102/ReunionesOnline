@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sala de Votación</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Header de la sala -->
+<div class="room-header">
+  <div>
+    <h2 id="roomName">Cargando sala...</h2>
+    <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+      <p style="margin: 0;">Código: <span id="roomCode" class="room-code"></span></p>
+      <button class="btn btn-secondary" onclick="copyRoomCode()" style="padding: 5px 15px; font-size: 0.85rem;">
+        📋 Copiar Código
+      </button>
+    </div>
+    <p id="roomDescription" style="color:#666;"></p>
+  </div>
+  <div>
+    <button class="btn btn-secondary" onclick="goToDashboard()">⬅️ Volver</button>
+    <button class="btn btn-danger" onclick="leaveRoom()">🚪 Salir</button>
+  </div>
+</div>
+
+    <!-- Usuarios conectados -->
+    <div class="users-online">
+      <strong>👥 Usuarios conectados:</strong>
+      <div id="usersList"></div>
+    </div>
+
+    <!-- Grid principal: Votaciones + Chat -->
+    <div class="room-grid">
+      
+      <!-- Sección de Votaciones -->
+      <div class="voting-section">
+        <div class="section-header">
+          <h3>📊 Votaciones</h3>
+          <button id="btnCreatePoll" class="btn btn-primary" onclick="showCreatePollModal()" style="display:none;">
+            ➕ Nueva Votación
+          </button>
+        </div>
+
+        <div id="pollsContainer">
+          <p style="text-align:center; color:#666;">No hay votaciones activas</p>
+        </div>
+      </div>
+
+      <!-- Sección de Chat -->
+      <div class="chat-section">
+        <h3>💬 Chat de la Sala</h3>
+        <div id="messages"></div>
+        <div class="chat-input">
+          <input type="text" id="messageInput" placeholder="Escribe un mensaje..." />
+          <button class="btn btn-primary" onclick="sendMessage()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Crear Votación -->
+  <div id="createPollModal" style="display:none;">
+    <div class="modal-content" style="max-width: 600px;">
+      <h3>Crear Nueva Votación</h3>
+      <input type="text" id="pollQuestion" placeholder="Pregunta de la votación" />
+      
+      <div id="optionsContainer">
+        <input type="text" class="poll-option-input" placeholder="Opción 1" />
+        <input type="text" class="poll-option-input" placeholder="Opción 2" />
+      </div>
+      
+      <button class="btn btn-secondary" onclick="addPollOption()">➕ Agregar Opción</button>
+      <br><br>
+      <button class="btn btn-success" onclick="createPoll()">Crear Votación</button>
+      <button class="btn btn-secondary" onclick="hideCreatePollModal()">Cancelar</button>
+      <p id="pollMsg"></p>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="room.js"></script>
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sala de Votación</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Header de la sala -->
+    <div class="room-header">
+      <div>
+        <h2 id="roomName">Cargando sala...</h2>
+        <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+          <p style="margin: 0;">Código: <span id="roomCode" class="room-code"></span></p>
+          <button class="btn btn-secondary" onclick="copyRoomCode()" style="padding: 5px 15px; font-size: 0.85rem;">
+            📋 Copiar Código
+          </button>
+        </div>
+        <p id="roomDescription" style="color:#666;"></p>
+      </div>
+      <div>
+        <button class="btn btn-secondary" onclick="goToDashboard()">⬅️ Volver</button>
+        <button class="btn btn-danger" onclick="leaveRoom()">🚪 Salir</button>
+      </div>
+    </div>
+
+    <!-- Usuarios conectados -->
+    <div class="users-online">
+      <strong>👥 Usuarios conectados:</strong>
+      <div id="usersList"></div>
+    </div>
+
+    <!-- Grid principal: Votaciones + Chat -->
+    <div class="room-grid">
+      
+      <!-- Sección de Votaciones -->
+      <div class="voting-section">
+        <div class="section-header">
+          <h3>📊 Votaciones</h3>
+          <button id="btnCreatePoll" class="btn btn-primary" onclick="showCreatePollModal()" style="display:none;">
+            ➕ Nueva Votación
+          </button>
+        </div>
+
+        <div id="pollsContainer">
+          <p style="text-align:center; color:#666;">No hay votaciones activas</p>
+        </div>
+      </div>
+
+      <!-- Sección de Chat -->
+      <div class="chat-section">
+        <h3>💬 Chat de la Sala</h3>
+        <div id="messages"></div>
+        <div class="chat-input">
+          <input type="text" id="messageInput" placeholder="Escribe un mensaje..." />
+          <button class="btn btn-primary" onclick="sendMessage()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Crear Votación -->
+  <div id="createPollModal" style="display:none;">
+    <div class="modal-content" style="max-width: 600px;">
+      <h3>Crear Nueva Votación</h3>
+      <input type="text" id="pollQuestion" placeholder="Pregunta de la votación" />
+      
+      <div id="optionsContainer">
+        <input type="text" class="poll-option-input" placeholder="Opción 1" />
+        <input type="text" class="poll-option-input" placeholder="Opción 2" />
+      </div>
+      
+      <button class="btn btn-secondary" onclick="addPollOption()">➕ Agregar Opción</button>
+      <br><br>
+      <button class="btn btn-success" onclick="createPoll()">Crear Votación</button>
+      <button class="btn btn-secondary" onclick="hideCreatePollModal()">Cancelar</button>
+      <p id="pollMsg"></p>
+    </div>
+  </div>
+
+  <!-- Modal Gráfico de Resultados -->
+  <div id="chartModal" style="display:none;">
+    <div class="modal-content" style="max-width: 800px;">
+      <h3>📊 Resultados de la Votación</h3>
+      <div style="position: relative; height: 400px;">
+        <canvas id="resultsChart"></canvas>
+      </div>
+      <br>
+      <button class="btn btn-secondary" onclick="hideChartModal()">Cerrar</button>
+      <button class="btn btn-primary" onclick="downloadChart()">📥 Descargar Gráfico</button>
+    </div>
+  </div>
+
+  <!-- ⬇️ IMPORTANTE: Agregar Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="room.js"></script>
+</body>
+</html>
+</body>
+</html>

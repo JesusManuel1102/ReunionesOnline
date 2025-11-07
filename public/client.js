@@ -44,12 +44,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!username || !role || !password) {
         msg.innerText = "Por favor llena todos los campos";
+        msg.className = "msg msg-error";
         return;
       }
 
       const res = await registerUser(username, role, password);
       if (res.status === 201 || res.status === 200) {
         msg.innerText = "Registrado exitosamente. Inicia sesión.";
+        msg.className = "msg msg-success";
       } else {
         if (res.data.errors) {
           msg.innerText = res.data.errors
@@ -58,11 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           msg.innerText = `Error ${res.status}: ${res.data.message}`;
         }
+        msg.className = "msg msg-error";
       }
     };
   }
 
-  // Login
+  // Login - CAMBIO IMPORTANTE: sessionStorage en lugar de localStorage
   if (path.includes("login.html")) {
     document.getElementById("btnLogin").onclick = async function () {
       const username = document.getElementById("username").value;
@@ -71,13 +74,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!username || !password) {
         msg.innerText = "Por favor llena todos los campos";
+        msg.className = "msg msg-error";
         return;
       }
 
       const res = await loginUser(username, password);
       if (res.status === 200 && res.token) {
-        localStorage.setItem("jwt_token", res.token);
-        window.location.href = "chat.html";
+        // ⬅️ CAMBIO: Usar sessionStorage en lugar de localStorage
+        sessionStorage.setItem("jwt_token", res.token);
+        window.location.href = "dashboard.html";
       } else {
         if (res.data.errors) {
           msg.innerText = res.data.errors
@@ -86,13 +91,15 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           msg.innerText = `Error ${res.status}: ${res.data.message}`;
         }
+        msg.className = "msg msg-error";
       }
     };
   }
 
-  // Chat
+  // Chat público (mantener para compatibilidad)
   if (path.includes("chat.html")) {
-    const token = localStorage.getItem("jwt_token");
+    // ⬅️ CAMBIO: sessionStorage
+    const token = sessionStorage.getItem("jwt_token");
     if (!token) {
       window.location.href = "login.html";
       return;
@@ -125,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     document.getElementById("btnLogout").onclick = function () {
-      localStorage.removeItem("jwt_token");
+      sessionStorage.removeItem("jwt_token");
       window.location.href = "login.html";
     };
 

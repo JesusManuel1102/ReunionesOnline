@@ -6,6 +6,8 @@ import authRouter from "./routes/authRoutes";
 import chatRoutes from "./routes/chatRoutes";
 import userRoutes from "./routes/userRoutes";
 import testRoutes from "./routes/testRoutes";
+import roomRoutes from "./routes/roomRoutes";    
+import pollRoutes from "./routes/pollRoutes";      
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -30,5 +32,7 @@ app.use("/auth", authRouter);
 app.use("/chat", chatRoutes);
 app.use("/user", userRoutes);
 app.use("/test", testRoutes);
+app.use("/rooms", roomRoutes);    
+app.use("/polls", pollRoutes);   
 
 export { app, port };

@@ -1,9 +1,13 @@
 import prisma from "../config/database";
 
 export const chatService = {
-  async saveMessage(userId: number, content: string) {
+  async saveMessage(userId: number, content: string, roomId?: number) {
     const msg = await prisma.message.create({
-      data: { userId, content },
+      data: { 
+        userId, 
+        content, 
+        roomId: roomId || null  // ⬅️ SOLUCIÓN: Si no hay roomId, usa null
+      },
       include: { user: { select: { username: true } } },
     });
     return {
@@ -14,8 +18,9 @@ export const chatService = {
     };
   },
 
-  async getRecentMessages(limit = 20) {
+  async getRecentMessages(limit = 20, roomId?: number) {
     const msgs = await prisma.message.findMany({
+      where: roomId ? { roomId } : { roomId: null },
       orderBy: { createdAt: "desc" },
       take: limit,
       include: { user: { select: { username: true } } },

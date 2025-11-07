@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Salas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>🏢 Dashboard de Salas</h2>
+      <p>Bienvenido, <span id="username"></span></p>
+    </div>
+
+    <div class="dashboard-actions">
+      <button class="btn btn-primary" onclick="showCreateRoomModal()">➕ Crear Nueva Sala</button>
+      <button class="btn btn-secondary" onclick="showJoinRoomModal()">🔗 Unirse con Código</button>
+      <button class="btn btn-danger" onclick="logout()">🚪 Salir</button>
+    </div>
+
+    <!-- Modal Crear Sala -->
+    <div id="createRoomModal" style="display:none;">
+      <div class="modal-content">
+        <h3>Crear Nueva Sala</h3>
+        <input type="text" id="roomName" placeholder="Nombre de la sala" />
+        <textarea id="roomDescription" placeholder="Descripción (opcional)" rows="3"></textarea>
+        <button class="btn btn-success" onclick="createRoom()">Crear Sala</button>
+        <button class="btn btn-secondary" onclick="hideCreateRoomModal()">Cancelar</button>
+        <p id="createMsg"></p>
+      </div>
+    </div>
+
+    <!-- Modal Unirse -->
+    <div id="joinRoomModal" style="display:none;">
+      <div class="modal-content">
+        <h3>Unirse a una Sala</h3>
+        <input type="text" id="roomCode" placeholder="Código de la sala (ej: ABC123)" />
+        <button class="btn btn-success" onclick="joinRoom()">Unirse</button>
+        <button class="btn btn-secondary" onclick="hideJoinRoomModal()">Cancelar</button>
+        <p id="joinMsg"></p>
+      </div>
+    </div>
+
+    <h3>Salas Activas</h3>
+    <div id="roomsList" class="room-list">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
