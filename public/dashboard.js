@@ -1,5 +1,5 @@
 const baseURL = window.location.origin;
-const token = localStorage.getItem("jwt_token");
+const token = sessionStorage.getItem("jwt_token");
 
 if (!token) {
   window.location.href = "login.html";
@@ -137,9 +137,10 @@ function enterRoom(code) {
 }
 
 function logout() {
-  localStorage.removeItem("jwt_token");
+  sessionStorage.removeItem("jwt_token");
   window.location.href = "login.html";
 }
+
 
 function showCreateRoomModal() {
   document.getElementById("createRoomModal").style.display = "flex";
